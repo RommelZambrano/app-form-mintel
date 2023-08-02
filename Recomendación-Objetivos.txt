@@ -1,0 +1,19 @@
+Recomendación:
+Objetivo: Implementar el sistema de declaración semestral de información estadística postal MINTEL
+
+1. Revisar el link de la estructura de la encuesta.
+2. Modelar la base de datos.
+3. Usar aplicaciones como Power Designer
+4. Levantar un estudio preliminar de la comparativa beneficios y desventajas de cada plataforma de desarrollo para ambiente web en lo principal sea opensource y portable de un server hacia otro,  Ejm . php vs java, y otros
+5. Implementar el Aplicativo enlazando la base de datos
+6. Pruebas de auditoría de sistemas: ingreso, edición y eliminación de registros
+7. Pruebas alfa con notificaciones para los dos correos con las respuestas, para correo MINTEL y correo del Operador. 
+8.  Migración de la aplicación al servidor del MINTEL
+9. Pruebas beta  
+10. Producción del aplicativo.
+
+
+----------------------------------------------------------------
+- Python
+- JS
+- PowerDesigner
