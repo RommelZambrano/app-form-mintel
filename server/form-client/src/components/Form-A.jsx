@@ -1,8 +1,8 @@
-import { FormPage } from "../pages/FormPage";
+import { FormPageA } from "../pages/FormPageA";
 function FormA() {
   return (
     <div>
-      <FormPage />
+      <FormPageA />
     </div>
   );
 }

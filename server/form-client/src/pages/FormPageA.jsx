@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { postForm } from "../data/form";
 
-export function FormPage() {
+export function FormPageA() {
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ export function FormPage() {
         <FormInput
           type="text"
           placeholder="RUC"
-          {...register("ruc", { required: true, maxLength: 11 })}
+          {...register("ruc", { required: true, maxLength: 13 })}
         />
         {errors.ruc && <ErrorMessage>Este campo es requerido</ErrorMessage>}
         <FormInput
