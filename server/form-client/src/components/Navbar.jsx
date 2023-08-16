@@ -7,11 +7,12 @@ export function Navbar() {
       <Link to="/form">Formulario A</Link>
       <Link to="/form-b">Formulario B</Link>
       <Link to="/form-c">Formulario C</Link>
+      <Link to="/form-d">Formulario D</Link>
+      <Link to="/form-e">Formulario E</Link>
+      <Link to="/form-f">Formulario F</Link>
     </Nav>
-
   );
 }
-
 
 const Nav = styled.nav`
   display: flex;
@@ -25,4 +26,3 @@ const Nav = styled.nav`
     text-decoration: none;
   }
 `;
-

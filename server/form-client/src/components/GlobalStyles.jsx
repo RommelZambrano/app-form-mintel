@@ -1,6 +1,4 @@
-
-
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
 body {
@@ -15,4 +13,24 @@ body {
     box-sizing: border-box;
   }
 
+  a {
+    text-decoration: none;
+    color: #fff;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
 `;

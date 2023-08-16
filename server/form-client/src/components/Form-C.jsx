@@ -22,7 +22,7 @@ function FormC() {
 
       <FormGroup>
         <Label>
-          Envío postal de Documentos No distribuibles y en estado Rezagados
+          Envío   Pagados
         </Label>
         <FormInput
           type="text"

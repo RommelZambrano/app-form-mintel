@@ -1,73 +1,20 @@
+import { useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import { postForm } from "../data/form";
-
-export function FormPageA() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = handleSubmit(async (data) => {
-    const res = await postForm(data);
-    console.log(res);
-  });
-
-  return (
-    <FormPageContainer>
-      <Form onSubmit={onSubmit}>
-        <FormInput
-          type="text"
-          placeholder="RUC"
-          {...register("ruc", { required: true, maxLength: 13 })}
-        />
-        {errors.ruc && <ErrorMessage>Este campo es requerido</ErrorMessage>}
-        <FormInput
-          type="text"
-          placeholder="Razon Social"
-          {...register("razon_social", { required: true, maxLength: 100 })}
-        />
-        {errors.razon_social && (
-          <ErrorMessage>Este campo es requerido</ErrorMessage>
-        )}
-        <FormInput
-          type="email"
-          placeholder="Correo"
-          {...register("email", { required: true, maxLength: 100 })}
-        />
-        {errors.email && <ErrorMessage>Este campo es requerido</ErrorMessage>}
-        <FormInput
-          type="text"
-          placeholder="Telefono"
-          {...register("telefono", { required: true, maxLength: 15 })}
-        />
-        {errors.telefono && (
-          <ErrorMessage>Este campo es requerido</ErrorMessage>
-        )}
-        <FormInput
-          type="text"
-          placeholder="Representante Legal"
-          {...register("representante_legal", {
-            required: true,
-            maxLength: 100,
-          })}
-        />
-        {errors.representante_legal && (
-          <ErrorMessage>Este campo es requerido</ErrorMessage>
-        )}
-        <Button>Enviar</Button>
-      </Form>
-    </FormPageContainer>
-  );
-}
+import { getOperator } from "../data/form";
+import { useForm } from "react-hook-form"; // Importa react-hook-form
 
 const FormPageContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #f2f2f2;
   height: 100vh;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  margin-bottom: 20px;
 `;
 
 const Form = styled.form`
@@ -91,7 +38,7 @@ const FormInput = styled.input`
 
 const ErrorMessage = styled.span`
   color: red;
-  margin-bottom: 10px;
+  margin-top: 5px;
 `;
 
 const Button = styled.button`
@@ -114,3 +61,81 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
+
+const NextButton = styled(Button)`
+  background-color: #00cc66;
+  &:hover {
+    background-color: #00b359;
+  }
+`;
+
+const ResultadoOperador = styled.div`
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+`;
+
+export function FormPageA() {
+  const [operador, setOperador] = useState(null);
+  const [error, setError] = useState(null);
+  const [busquedaRealizada, setBusquedaRealizada] = useState(false);
+
+  // Inicializar useForm
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    setError(null); // Limpiar el mensaje de error
+
+    try {
+      const operadorEncontrado = await getOperator(data.ruc);
+      if (operadorEncontrado) {
+        setOperador(operadorEncontrado);
+        setBusquedaRealizada(true);
+      } else {
+        setError("No se encontró el operador");
+        setOperador(null);
+        setBusquedaRealizada(false);
+      }
+    } catch (error) {
+      console.error("Error al buscar operador:", error);
+      setError("Error al buscar operador");
+      setOperador(null);
+      setBusquedaRealizada(false);
+    }
+  };
+
+  return (
+    <FormPageContainer>
+      <Title>Búsqueda de Operador por RUC</Title>
+      {!busquedaRealizada && (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <FormInput
+            type="text"
+            placeholder="Buscar por RUC"
+            name="ruc"
+            {...register("ruc", { required: true, maxLength: 15 })}
+          />
+          {errors.ruc && <ErrorMessage>Este campo es requerido</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Button type="submit">Buscar</Button>
+        </Form>
+      )}
+      {operador && (        
+        <ResultadoOperador>
+          <p>RUC: {operador.ruc}</p>
+          <p>Razón Social: {operador.razon_social}</p>
+          <p>Correo Electrónico: {operador.email}</p>
+          <p>Representante Legal: {operador.representante_legal}</p>
+          <p>Teléfono Celular: {operador.telefono_celular}</p>
+          <p>Teléfono Fijo: {operador.telefono_fijo}</p>
+          <NextButton>Siguiente</NextButton>
+        </ResultadoOperador>
+      )}
+    </FormPageContainer>
+  );
+}
