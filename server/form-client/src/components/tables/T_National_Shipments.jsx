@@ -1,185 +1,109 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import {
+  postOperator,
+  postPeriod,
+  postDocsNationals,
+} from "../../data/form";
 
 export function NationalShipments() {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm();
+  const onSubmit = async (data) => {
+    try {
+      // Descomponer los datos del formulario en los diferentes conjuntos de datos que quieres enviar
+      const operatorData = {
+        ruc: data.ruc,
+        razon_social: data.razon_social,
+        email: data.email,
+        representante_legal: data.representante_legal,
+        telefono_celular: data.telefono_celular,
+        telefono_fijo: data.telefono_fijo,
+      };
+      const periodData = {
+        year: data.year,
+        semester: data.semester,
+      };
+      const docsLocalShipment = [];
+      for (let i = 1; i <= 6; i++) {
+        docsLocalShipment.push({
+          mes: data[`mes${i}`],
+          numero_de_documentos: data[`numero_de_documentos_mes${i}`],
+          numero_de_paquetes: data[`numero_de_paquetes_mes${i}`],
+          // Asegúrate de que estos nombres de campo coincidan con los nombres que has registrado con react-hook-form
+        });
+      }
+
+      // Hacer una solicitud POST para cada conjunto de datos
+      const operatorResponse = await postOperator(operatorData);
+      const periodResponse = await postPeriod(periodData);
+      const enviosResponses = await Promise.all(
+        docsLocalShipment.map((docsLocalShipment) =>
+        postDocsNationals(docsLocalShipment)
+        )
+      );
+
+      // Mostrar las respuestas del servidor (opcional)
+      console.log(operatorResponse.data);
+      console.log(periodResponse.data);
+      enviosResponses.forEach((response) => console.log(response.data));
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
+  };
+
+  const rows = ["Envío de documentos", "Envío de paquetería"]; // Agrega más elementos según sea necesario
+  const months = ["mes 1", "mes 2", "mes 3", "mes 4", "mes 5", "mes 6"]; // Agrega más elementos según sea necesario
 
   return (
     <FormPageContainer>
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Label>Envios Nacionales</Label>
         <Table>
           <thead>
             <tr>
               <th></th>
-              <th>MES 1</th>
-              <th>MES 2</th>
-              <th>MES 3</th>
-              <th>MES 4</th>
-              <th>MES 5</th>
-              <th>MES 6</th>
+              {months.map((month, index) => (
+                <th key={index}>{month.toUpperCase()}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            <TableRow>
-              <td>Envío de documentos</td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes2", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes2 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes3", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes3 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes4", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes4 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes5", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes5 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes6", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes6 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              {/* Mismo patrón para los demás campos y celdas */}
-            </TableRow>
-            <TableRow>
-              <td>Envío de paquetería</td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-            </TableRow>
+            {rows.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <td>{row}</td>
+                {months.map((month, monthIndex) => (
+                  <td key={monthIndex}>
+                    <FormInput
+                      type="text"
+                      {...register(
+                        `numero_de_documentos_mes${monthIndex + 1}`,
+                        {
+                          required: true,
+                          maxLength: 50,
+                        }
+                      )}
+                    />
+                    <FormInput
+                      type="text"
+                      {...register(`numero_de_paquetes_mes${monthIndex + 1}`, {
+                        required: true,
+                        maxLength: 50,
+                      })}
+                    />
+                    {errors[`numero_de_documentos_mes${monthIndex + 1}`] && (
+                      <ErrorMessage>Este campo es requerido</ErrorMessage>
+                    )}
+                    {errors[`numero_de_paquetes_mes${monthIndex + 1}`] && (
+                      <ErrorMessage>Este campo es requerido</ErrorMessage>
+                    )}
+                  </td>
+                ))}
+              </TableRow>
+            ))}
           </tbody>
         </Table>
         <Button>Enviar</Button>

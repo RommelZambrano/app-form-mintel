@@ -1,8 +1,97 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { getOperator } from "../data/form";
-import { useForm } from "react-hook-form"; // Importa react-hook-form
+import { useForm } from "react-hook-form";
+import { Toaster, toast } from "react-hot-toast";
+import { SeleccionarPeriodo } from "./FormPeriodYear";
 
+export function FormPageA() {
+  const [operador, setOperador] = useState(null);
+  const [searchOperator, setSearchOperator] = useState(false);
+  const [findPeriod, setFindPeriod] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    if (data.ruc.length !== 13) {
+      toast.error("El RUC debe contener 13 dígitos");
+      return;
+    }
+    try {
+      const foundOperador = await getOperator(data.ruc);
+      if (foundOperador.ruc) {
+        setOperador(foundOperador);
+        setSearchOperator(true);
+      } else {
+        toast.error("RUC no encontrado en la base de datos");
+        setOperador(foundOperador);
+        setSearchOperator(true);
+      }
+    } catch (error) {
+      toast.error("Error al buscar operador");
+      setOperador(null);
+      setSearchOperator(false);
+    }
+  };
+
+  return (
+    <FormPageContainer>
+      <Toaster position="top-right" reverseOrder={false} />
+
+      {!searchOperator && (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Title>Búsqueda de Operador por RUC</Title>
+          <FormInput
+            type="text"
+            placeholder="Buscar por RUC"
+            name="ruc"
+            {...register("ruc", { required: true, maxLength: 13 })}
+          />
+          {errors.ruc && (
+            <ErrorMessage>
+              {errors.ruc.type === "required" && "El RUC es requerido"}
+              {errors.ruc.type === "maxLength" &&
+                "El RUC debe contener 13 dígitos"}
+            </ErrorMessage>
+          )}
+          <Button type="submit">Buscar</Button>
+        </Form>
+      )}
+      {operador && !findPeriod && (
+        <ResultOperator>
+          <Title>Información del Operador</Title>
+          <p>id_postal_operator: {operador.id_postal_operator}</p>
+          <p>RUC: {operador.ruc}</p>
+          <p>Razón Social: {operador.razon_social}</p>
+          <p>Correo Electrónico: {operador.email}</p>
+          <p>Representante Legal: {operador.representante_legal}</p>
+          <p>Teléfono Celular: {operador.telefono_celular}</p>
+          <p>Teléfono Fijo: {operador.telefono_fijo}</p>
+          <NextButton onClick={() => setFindPeriod(true)}>
+            Siguiente
+          </NextButton>
+        </ResultOperator>
+      )}
+      {findPeriod && (
+        <SeleccionarPeriodo
+          operador={operador}
+          onSeleccionar={(semester, year) => {
+            // Aquí puedes manejar los datos seleccionados (período y año)
+            console.log("Período seleccionado:", semester);
+            console.log("Año seleccionado:", year);
+            setOperador(null);
+            setSearchOperator(false);
+            setFindPeriod(false);
+          }}
+        />
+      )}
+    </FormPageContainer>
+  );
+}
 const FormPageContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,73 +158,10 @@ const NextButton = styled(Button)`
   }
 `;
 
-const ResultadoOperador = styled.div`
+const ResultOperator = styled.div`
   margin-top: 20px;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 `;
-
-export function FormPageA() {
-  const [operador, setOperador] = useState(null);
-  const [error, setError] = useState(null);
-  const [busquedaRealizada, setBusquedaRealizada] = useState(false);
-
-  // Inicializar useForm
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = async (data) => {
-    setError(null); // Limpiar el mensaje de error
-
-    try {
-      const operadorEncontrado = await getOperator(data.ruc);
-      if (operadorEncontrado) {
-        setOperador(operadorEncontrado);
-        setBusquedaRealizada(true);
-      } else {
-        setError("No se encontró el operador");
-        setOperador(null);
-        setBusquedaRealizada(false);
-      }
-    } catch (error) {
-      console.error("Error al buscar operador:", error);
-      setError("Error al buscar operador");
-      setOperador(null);
-      setBusquedaRealizada(false);
-    }
-  };
-
-  return (
-    <FormPageContainer>
-      <Title>Búsqueda de Operador por RUC</Title>
-      {!busquedaRealizada && (
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <FormInput
-            type="text"
-            placeholder="Buscar por RUC"
-            name="ruc"
-            {...register("ruc", { required: true, maxLength: 15 })}
-          />
-          {errors.ruc && <ErrorMessage>Este campo es requerido</ErrorMessage>}
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          <Button type="submit">Buscar</Button>
-        </Form>
-      )}
-      {operador && (        
-        <ResultadoOperador>
-          <p>RUC: {operador.ruc}</p>
-          <p>Razón Social: {operador.razon_social}</p>
-          <p>Correo Electrónico: {operador.email}</p>
-          <p>Representante Legal: {operador.representante_legal}</p>
-          <p>Teléfono Celular: {operador.telefono_celular}</p>
-          <p>Teléfono Fijo: {operador.telefono_fijo}</p>
-          <NextButton>Siguiente</NextButton>
-        </ResultadoOperador>
-      )}
-    </FormPageContainer>
-  );
-}

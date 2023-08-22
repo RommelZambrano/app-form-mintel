@@ -9,12 +9,12 @@ import { NationalShipments } from "./tables/T_National_Shipments";
 function FormB() {
   return (
     <div>
-      <InternationalBilling />
+      {/* <InternationalBilling />
       <InternationalShipments />
       <LocalBilling />
       <LocalShipments />
-      <NationalBilling />
-      <NationalShipments />
+      <NationalBilling /> */}
+     <NationalShipments /> 
     </div>
   );
 }
