@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 # Registras tus vistas con el router. Esto generará automáticamente las rutas para estas vistas.
 
 router.register(r"form", views.PostalOperatorView, "form")
+router.register(r"year", views.YearView, "year")
 router.register(r"period", views.PeriodView, "period")
 router.register(r"national-shipment", views.ShipmentNationalView, "national-shipment")
 

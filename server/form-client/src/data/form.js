@@ -20,17 +20,16 @@ export const getOperator = async (ruc) => {
     throw error;
   }
 };
-
-export const postOperator = (data) => {
+export const postYear = async (data) => {
   try {
-    const response = formApi.post("/form/", data);
+    const response = await formApi.post("/year/", data);
     console.log("response", response);
     return response.data;
   } catch (error) {
-    console.error("Error al crear operador:", error);
+    console.error("Error al crear año:", error);
     throw error;
   }
-};
+}
 
 export const postPeriod = async (data) => {
   try {

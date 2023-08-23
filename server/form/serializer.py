@@ -15,7 +15,7 @@ class YearSerializer(serializers.ModelSerializer):
 
 class PeriodSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("id_period", "id_year", "period")
+        fields = ("id_period", "id_operator", "id_year", "period")
         model = T_Period
 
 

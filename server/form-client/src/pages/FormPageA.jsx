@@ -6,7 +6,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { SeleccionarPeriodo } from "./FormPeriodYear";
 
 export function FormPageA() {
-  const [operador, setOperador] = useState(null);
+  const [operator, setOperator] = useState(null);
   const [searchOperator, setSearchOperator] = useState(false);
   const [findPeriod, setFindPeriod] = useState(false);
 
@@ -22,18 +22,18 @@ export function FormPageA() {
       return;
     }
     try {
-      const foundOperador = await getOperator(data.ruc);
-      if (foundOperador.ruc) {
-        setOperador(foundOperador);
+      const foundoperator = await getOperator(data.ruc);
+      if (foundoperator.ruc) {
+        setOperator(foundoperator);
         setSearchOperator(true);
       } else {
         toast.error("RUC no encontrado en la base de datos");
-        setOperador(foundOperador);
+        setOperator(foundoperator);
         setSearchOperator(true);
       }
     } catch (error) {
-      toast.error("Error al buscar operador");
-      setOperador(null);
+      toast.error("Error al buscar operator");
+      setOperator(null);
       setSearchOperator(false);
     }
   };
@@ -44,7 +44,7 @@ export function FormPageA() {
 
       {!searchOperator && (
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Title>Búsqueda de Operador por RUC</Title>
+          <Title>Búsqueda de operator por RUC</Title>
           <FormInput
             type="text"
             placeholder="Buscar por RUC"
@@ -61,16 +61,16 @@ export function FormPageA() {
           <Button type="submit">Buscar</Button>
         </Form>
       )}
-      {operador && !findPeriod && (
+      {operator && !findPeriod && (
         <ResultOperator>
-          <Title>Información del Operador</Title>
-          <p>id_postal_operator: {operador.id_postal_operator}</p>
-          <p>RUC: {operador.ruc}</p>
-          <p>Razón Social: {operador.razon_social}</p>
-          <p>Correo Electrónico: {operador.email}</p>
-          <p>Representante Legal: {operador.representante_legal}</p>
-          <p>Teléfono Celular: {operador.telefono_celular}</p>
-          <p>Teléfono Fijo: {operador.telefono_fijo}</p>
+          <Title>Información del operator</Title>
+          <p>id_postal_operator: {operator.id_postal_operator}</p>
+          <p>RUC: {operator.ruc}</p>
+          <p>Razón Social: {operator.razon_social}</p>
+          <p>Correo Electrónico: {operator.email}</p>
+          <p>Representante Legal: {operator.representante_legal}</p>
+          <p>Teléfono Celular: {operator.telefono_celular}</p>
+          <p>Teléfono Fijo: {operator.telefono_fijo}</p>
           <NextButton onClick={() => setFindPeriod(true)}>
             Siguiente
           </NextButton>
@@ -78,12 +78,12 @@ export function FormPageA() {
       )}
       {findPeriod && (
         <SeleccionarPeriodo
-          operador={operador}
+          operator={operator}
           onSeleccionar={(semester, year) => {
             // Aquí puedes manejar los datos seleccionados (período y año)
             console.log("Período seleccionado:", semester);
             console.log("Año seleccionado:", year);
-            setOperador(null);
+            setOperator(null);
             setSearchOperator(false);
             setFindPeriod(false);
           }}

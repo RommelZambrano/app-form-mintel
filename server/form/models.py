@@ -22,12 +22,13 @@ class T_Year(models.Model):
 
 class T_Period(models.Model):
     id_period = models.AutoField(primary_key=True)
+    id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
     id_year = models.ForeignKey(T_Year, on_delete=models.CASCADE)
     period = models.CharField(max_length=20)
 
     def __str__(self):
         return f"Period: {self.id_period} - {self.period}"
-    
+            
 class T_National_Shipment(models.Model):
     id_national_shipment = models.AutoField(primary_key=True)
     id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)

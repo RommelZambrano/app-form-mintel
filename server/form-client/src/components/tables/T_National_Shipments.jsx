@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import {
-  postOperator,
   postPeriod,
   postDocsNationals,
 } from "../../data/form";
@@ -38,7 +37,6 @@ export function NationalShipments() {
       }
 
       // Hacer una solicitud POST para cada conjunto de datos
-      const operatorResponse = await postOperator(operatorData);
       const periodResponse = await postPeriod(periodData);
       const enviosResponses = await Promise.all(
         docsLocalShipment.map((docsLocalShipment) =>
@@ -47,7 +45,6 @@ export function NationalShipments() {
       );
 
       // Mostrar las respuestas del servidor (opcional)
-      console.log(operatorResponse.data);
       console.log(periodResponse.data);
       enviosResponses.forEach((response) => console.log(response.data));
     } catch (error) {
