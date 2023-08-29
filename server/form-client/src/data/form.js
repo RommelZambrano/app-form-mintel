@@ -44,7 +44,7 @@ export const postPeriod = async (data) => {
 
 export const postDocsNationals = async (data) => {
   try {
-    const response = await formApi.post("/docs-shipper/", data);
+    const response = await formApi.post("/national-shipment/", data);
     console.log("response", response);
     return response.data;
   } catch (error) {

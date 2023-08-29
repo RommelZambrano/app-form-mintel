@@ -8,7 +8,7 @@ import { SeleccionarPeriodo } from "./FormPeriodYear";
 export function FormPageA() {
   const [operator, setOperator] = useState(null);
   const [searchOperator, setSearchOperator] = useState(false);
-  const [findPeriod, setFindPeriod] = useState(false);
+  const [showComponentB, setShowComponentB] = useState(false);
 
   const {
     register,
@@ -61,7 +61,7 @@ export function FormPageA() {
           <Button type="submit">Buscar</Button>
         </Form>
       )}
-      {operator && !findPeriod && (
+      {operator && !showComponentB && (
         <ResultOperator>
           <Title>Información del operator</Title>
           <p>id_postal_operator: {operator.id_postal_operator}</p>
@@ -71,21 +71,20 @@ export function FormPageA() {
           <p>Representante Legal: {operator.representante_legal}</p>
           <p>Teléfono Celular: {operator.telefono_celular}</p>
           <p>Teléfono Fijo: {operator.telefono_fijo}</p>
-          <NextButton onClick={() => setFindPeriod(true)}>
+          <NextButton onClick={() => setShowComponentB(true)}>
             Siguiente
           </NextButton>
         </ResultOperator>
       )}
-      {findPeriod && (
+      {showComponentB && (
         <SeleccionarPeriodo
           operator={operator}
           onSeleccionar={(semester, year) => {
-            // Aquí puedes manejar los datos seleccionados (período y año)
             console.log("Período seleccionado:", semester);
             console.log("Año seleccionado:", year);
             setOperator(null);
             setSearchOperator(false);
-            setFindPeriod(false);
+            showComponentB(false);
           }}
         />
       )}

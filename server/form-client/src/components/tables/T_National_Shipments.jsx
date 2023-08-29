@@ -1,64 +1,65 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import {
-  postPeriod,
-  postDocsNationals,
-} from "../../data/form";
+import { postYear, postPeriod, postDocsNationals } from "../../data/form";
 
-export function NationalShipments() {
+import PropTypes from "prop-types";
+
+export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
+  NationalShipments.propTypes = {
+    selectedYear: PropTypes.string.isRequired,
+    selectedPeriod: PropTypes.string.isRequired,
+    operator: PropTypes.object.isRequired,
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const onSubmit = async (data) => {
     try {
-      // Descomponer los datos del formulario en los diferentes conjuntos de datos que quieres enviar
-      const operatorData = {
-        ruc: data.ruc,
-        razon_social: data.razon_social,
-        email: data.email,
-        representante_legal: data.representante_legal,
-        telefono_celular: data.telefono_celular,
-        telefono_fijo: data.telefono_fijo,
+      // Primero, registra el año
+      const yearData = {
+        year: selectedYear,
       };
+      console.log("yearData", yearData);
+      const responseYear = await postYear(yearData);
+      const yearId = responseYear.id_year;
+
+      // Luego, registra el período utilizando el ID del año
       const periodData = {
-        year: data.year,
-        semester: data.semester,
+        id_operator: operator.id_postal_operator,
+        id_year: yearId,
+        period: selectedPeriod,
       };
-      const docsLocalShipment = [];
-      for (let i = 1; i <= 6; i++) {
-        docsLocalShipment.push({
-          mes: data[`mes${i}`],
-          numero_de_documentos: data[`numero_de_documentos_mes${i}`],
-          numero_de_paquetes: data[`numero_de_paquetes_mes${i}`],
-          // Asegúrate de que estos nombres de campo coincidan con los nombres que has registrado con react-hook-form
-        });
-      }
+      const responsePeriod = await postPeriod(periodData);
+      const periodId = responsePeriod.id_period;
 
-      // Hacer una solicitud POST para cada conjunto de datos
-      const periodResponse = await postPeriod(periodData);
-      const enviosResponses = await Promise.all(
-        docsLocalShipment.map((docsLocalShipment) =>
-        postDocsNationals(docsLocalShipment)
-        )
-      );
-
-      // Mostrar las respuestas del servidor (opcional)
-      console.log(periodResponse.data);
-      enviosResponses.forEach((response) => console.log(response.data));
+      // Finalmente, registra los documentos utilizando el ID del período
+      const docsData = {
+        id_operator: operator.id_postal_operator,
+        id_period: periodId,
+        number_docs: data.docs[0][0],
+        number_packages: data.docs[1][0], 
+      };
+      const responseDocs = await postDocsNationals(docsData);
+      console.log("responseDocs", responseDocs);
     } catch (error) {
-      console.error("Error al enviar los datos:", error);
+      console.error("Error al crear el formulario", error);
     }
   };
 
-  const rows = ["Envío de documentos", "Envío de paquetería"]; // Agrega más elementos según sea necesario
-  const months = ["mes 1", "mes 2", "mes 3", "mes 4", "mes 5", "mes 6"]; // Agrega más elementos según sea necesario
-
-  return (
+  const rows = ["Envío de documentos", "Envío de paquetería"]; 
+  const months_1_period = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"]; 
+  const months_2_period = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]; 
+  const months = selectedPeriod === "1er Semestre" ? months_1_period : months_2_period;
+  
+  
+   return (
     <FormPageContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Label>Envios Nacionales</Label>
+        <Label>Envíos Nacionales</Label>
         <Table>
           <thead>
             <tr>
@@ -74,36 +75,26 @@ export function NationalShipments() {
                 <td>{row}</td>
                 {months.map((month, monthIndex) => (
                   <td key={monthIndex}>
-                    <FormInput
+                    <input
                       type="text"
-                      {...register(
-                        `numero_de_documentos_mes${monthIndex + 1}`,
-                        {
-                          required: true,
-                          maxLength: 50,
-                        }
-                      )}
-                    />
-                    <FormInput
-                      type="text"
-                      {...register(`numero_de_paquetes_mes${monthIndex + 1}`, {
-                        required: true,
-                        maxLength: 50,
+                      {...register(`docs[${rowIndex}][${monthIndex}]`, {
+                        required: "Este campo es requerido",
                       })}
                     />
-                    {errors[`numero_de_documentos_mes${monthIndex + 1}`] && (
-                      <ErrorMessage>Este campo es requerido</ErrorMessage>
-                    )}
-                    {errors[`numero_de_paquetes_mes${monthIndex + 1}`] && (
-                      <ErrorMessage>Este campo es requerido</ErrorMessage>
-                    )}
+                    {errors.docs &&
+                      errors.docs[rowIndex] &&
+                      errors.docs[rowIndex][monthIndex] && (
+                        <ErrorMessage>
+                          {errors.docs[rowIndex][monthIndex].message}
+                        </ErrorMessage>
+                      )}
                   </td>
                 ))}
               </TableRow>
             ))}
           </tbody>
         </Table>
-        <Button>Enviar</Button>
+        <Button type="submit">Guardar</Button>
       </Form>
     </FormPageContainer>
   );
@@ -157,14 +148,14 @@ const TableRow = styled.tr`
   }
 `;
 
-const FormInput = styled.input`
+/**const FormInput = styled.input`
   width: 100%;
   height: 30px;
   margin-bottom: 10px;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-`;
+`; /** */
 
 const ErrorMessage = styled.span`
   color: red;
