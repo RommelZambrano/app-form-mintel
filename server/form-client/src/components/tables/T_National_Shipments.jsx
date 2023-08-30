@@ -3,10 +3,13 @@ import { useForm } from "react-hook-form";
 import { postYear, postPeriod, postDocsNationals } from "../../data/form";
 
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+
   NationalShipments.propTypes = {
-    selectedYear: PropTypes.string.isRequired,
+    selectedYear: PropTypes.string.isRequired,  
     selectedPeriod: PropTypes.string.isRequired,
     operator: PropTypes.object.isRequired,
   };
@@ -37,26 +40,41 @@ export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
       const periodId = responsePeriod.id_period;
 
       // Finalmente, registra los documentos utilizando el ID del período
-      const docsData = {
-        id_operator: operator.id_postal_operator,
-        id_period: periodId,
-        number_docs: data.docs[0][0],
-        number_packages: data.docs[1][0], 
-      };
+      const docsData = new FormData();
+      docsData.append("id_operator", operator.id_postal_operator);
+      docsData.append("id_period", periodId);
+      docsData.append("number_docs", data.docs[0][0]);
+      docsData.append("number_packages", data.docs[1][0]);
+      docsData.append("file_nationals_shipments", selectedFile);
       const responseDocs = await postDocsNationals(docsData);
+
       console.log("responseDocs", responseDocs);
     } catch (error) {
       console.error("Error al crear el formulario", error);
     }
   };
 
-  const rows = ["Envío de documentos", "Envío de paquetería"]; 
-  const months_1_period = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"]; 
-  const months_2_period = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]; 
-  const months = selectedPeriod === "1er Semestre" ? months_1_period : months_2_period;
-  
-  
-   return (
+  const rows = ["Envío de documentos", "Envío de paquetería"];
+  const months_1_period = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+  ];
+  const months_2_period = [
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+  const months =
+    selectedPeriod === "1er Semestre" ? months_1_period : months_2_period;
+
+  return (
     <FormPageContainer>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Label>Envíos Nacionales</Label>
@@ -94,6 +112,20 @@ export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
             ))}
           </tbody>
         </Table>
+
+        <FileInputLabel>
+          <FileInputText>Seleccionar archivo</FileInputText>
+          <FileInput
+            type="file"
+            {...register("file_nationals_shipments", {
+              required: "Este campo es requerido",
+            })}
+            onChange={(e) => {
+              setSelectedFile(e.target.files[0]); // Actualiza el estado con el archivo seleccionado
+            }}
+          />
+          {selectedFile && <p>Archivo seleccionado: {selectedFile.name}</p>}
+        </FileInputLabel>
         <Button type="submit">Guardar</Button>
       </Form>
     </FormPageContainer>
@@ -130,8 +162,11 @@ const Form = styled.form`
 
 const Table = styled.table`
   width: 100%;
+  
   border-collapse: collapse;
   margin: 20px 0;
+  border-radius: 5px;
+  overflow: hidden;
 `;
 
 const TableRow = styled.tr`
@@ -148,14 +183,20 @@ const TableRow = styled.tr`
   }
 `;
 
-/**const FormInput = styled.input`
-  width: 100%;
-  height: 30px;
-  margin-bottom: 10px;
-  padding: 5px;
-  border: 1px solid #ccc;
+const FileInput = styled.input`
+  display: none;
+`;
+
+const FileInputLabel = styled.label`
+  background-color: #f2f2f2;
+  padding: 10px;
   border-radius: 5px;
-`; /** */
+  cursor: pointer;
+`;
+
+const FileInputText = styled.span`
+  margin-right: 10px;
+`;
 
 const ErrorMessage = styled.span`
   color: red;

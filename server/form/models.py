@@ -35,6 +35,8 @@ class T_National_Shipment(models.Model):
     id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
     number_docs = models.IntegerField()
     number_packages = models.IntegerField()
+    file_nationals_shipments = models.FileField(upload_to='files/')
+
 
     def __str__(self):
-        return f"National Shipment: {self.id_national_shipment} - {self.number_docs} - {self.number_packages}"
+        return f"National Shipment: {self.id_national_shipment} - {self.number_docs} - {self.number_packages} - {self.file_nationals_shipments}"

@@ -51,4 +51,4 @@ export const postDocsNationals = async (data) => {
     console.error("Error al crear documento nacional:", error);
     throw error;
   }
-}
+};

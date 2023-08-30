@@ -90,7 +90,7 @@ const SelectedPeriodContainer = styled.div`
 
 const Label = styled.label`
   font-size: 18px;
-  margin-bottom: 10px;
+  margin-bottom: 10px;  
 `;
 
 const Button = styled.button`
