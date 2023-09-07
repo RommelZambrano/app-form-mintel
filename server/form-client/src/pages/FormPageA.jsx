@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { getOperator } from "../data/form";
+import { getOperator } from "../data/formApiData";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { SeleccionarPeriodo } from "./FormPeriodYear";

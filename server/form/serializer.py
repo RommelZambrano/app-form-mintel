@@ -21,5 +21,8 @@ class PeriodSerializer(serializers.ModelSerializer):
 
 class ShipmentsNationalSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ("id_operator", "id_period", "number_docs", "number_packages", "file_nationals_shipments")
+        fields = ("id_operator", "id_period", "enn_docs_month1", "enn_docs_month2", "enn_docs_month3",
+                  "enn_docs_month4", "enn_docs_month5", "enn_docs_month6", "enn_packages_month1",
+                  "enn_packages_month2", "enn_packages_month3", "enn_packages_month4",
+                  "enn_packages_month5", "enn_packages_month6")
         model = T_National_Shipment

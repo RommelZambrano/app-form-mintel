@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { postYear, postPeriod, postDocsNationals } from "../../data/form";
+import { NationalBilling } from "../tables/T_National_Billing";
+import { LocalShipments } from "../tables/T_Local_Shipments";
+import { LocalBilling } from "../tables/T_Local_Billing";
 
 import PropTypes from "prop-types";
-import { useState } from "react";
 
-export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
-  const [selectedFile, setSelectedFile] = useState(null);
-
+export function NationalShipments({ selectedPeriod }) {
   NationalShipments.propTypes = {
-    selectedYear: PropTypes.string.isRequired,  
+    selectedYear: PropTypes.string.isRequired,
     selectedPeriod: PropTypes.string.isRequired,
     operator: PropTypes.object.isRequired,
   };
@@ -22,33 +21,21 @@ export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
 
   const onSubmit = async (data) => {
     try {
-      // Primero, registra el año
-      const yearData = {
-        year: selectedYear,
+      const docsData = {
+        enn_docs_month1: data.docs[0][0],
+        enn_docs_month2: data.docs[0][1],
+        enn_docs_month3: data.docs[0][2],
+        enn_docs_month4: data.docs[0][3],
+        enn_docs_month5: data.docs[0][4],
+        enn_docs_month6: data.docs[0][5],
+        enn_packages_month1: data.docs[1][0],
+        enn_packages_month2: data.docs[1][1],
+        enn_packages_month3: data.docs[1][2],
+        enn_packages_month4: data.docs[1][3],
+        enn_packages_month5: data.docs[1][4],
+        enn_packages_month6: data.docs[1][5],
       };
-      console.log("yearData", yearData);
-      const responseYear = await postYear(yearData);
-      const yearId = responseYear.id_year;
-
-      // Luego, registra el período utilizando el ID del año
-      const periodData = {
-        id_operator: operator.id_postal_operator,
-        id_year: yearId,
-        period: selectedPeriod,
-      };
-      const responsePeriod = await postPeriod(periodData);
-      const periodId = responsePeriod.id_period;
-
-      // Finalmente, registra los documentos utilizando el ID del período
-      const docsData = new FormData();
-      docsData.append("id_operator", operator.id_postal_operator);
-      docsData.append("id_period", periodId);
-      docsData.append("number_docs", data.docs[0][0]);
-      docsData.append("number_packages", data.docs[1][0]);
-      docsData.append("file_nationals_shipments", selectedFile);
-      const responseDocs = await postDocsNationals(docsData);
-
-      console.log("responseDocs", responseDocs);
+      console.log("docsData", docsData);
     } catch (error) {
       console.error("Error al crear el formulario", error);
     }
@@ -97,6 +84,10 @@ export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
                       type="text"
                       {...register(`docs[${rowIndex}][${monthIndex}]`, {
                         required: "Este campo es requerido",
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Este campo debe ser numérico",
+                        },
                       })}
                     />
                     {errors.docs &&
@@ -112,68 +103,54 @@ export function NationalShipments({ selectedYear, selectedPeriod, operator }) {
             ))}
           </tbody>
         </Table>
-
-        <FileInputLabel>
-          <FileInputText>Seleccionar archivo</FileInputText>
-          <FileInput
-            type="file"
-            {...register("file_nationals_shipments", {
-              required: "Este campo es requerido",
-            })}
-            onChange={(e) => {
-              setSelectedFile(e.target.files[0]); // Actualiza el estado con el archivo seleccionado
-            }}
-          />
-          {selectedFile && <p>Archivo seleccionado: {selectedFile.name}</p>}
-        </FileInputLabel>
-        <Button type="submit">Guardar</Button>
+        <Button type="submit">Siguiente</Button>
       </Form>
+      <NationalBilling selectedPeriod={selectedPeriod} />
+      <LocalShipments selectedPeriod={selectedPeriod} />
+      <LocalBilling selectedPeriod={selectedPeriod} />
     </FormPageContainer>
   );
 }
 
 const Label = styled.label`
-  font-size: 20px;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
 const FormPageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background-color: #f2f2f2;
-  height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 50px;
+  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  width: 80%;
-  max-width: 1000px; /* Valor para controlar el ancho del formulario */
-  margin: 20px auto; /* Centrar el formulario horizontalmente */
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto;
+  box-sizing: border-box;
 `;
 
 const Table = styled.table`
   width: 100%;
-  
   border-collapse: collapse;
-  margin: 20px 0;
-  border-radius: 5px;
-  overflow: hidden;
+  margin: 1rem auto;
 `;
 
 const TableRow = styled.tr`
   border-bottom: 1px solid #ccc;
 
   td {
-    padding: 10px;
+    padding: 1rem;
     text-align: center;
     border-right: 1px solid #ccc;
 
@@ -183,29 +160,14 @@ const TableRow = styled.tr`
   }
 `;
 
-const FileInput = styled.input`
-  display: none;
-`;
-
-const FileInputLabel = styled.label`
-  background-color: #f2f2f2;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const FileInputText = styled.span`
-  margin-right: 10px;
-`;
-
 const ErrorMessage = styled.span`
   color: red;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
 const Button = styled.button`
-  margin: 10px;
-  padding: 5px 10px;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #fff;

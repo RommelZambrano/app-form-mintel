@@ -33,10 +33,98 @@ class T_National_Shipment(models.Model):
     id_national_shipment = models.AutoField(primary_key=True)
     id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
     id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
-    number_docs = models.IntegerField()
-    number_packages = models.IntegerField()
-    file_nationals_shipments = models.FileField(upload_to='files/')
-
+    enn_docs_month1 = models.IntegerField()
+    enn_docs_month2 = models.IntegerField()
+    enn_docs_month3 = models.IntegerField()
+    enn_docs_month4 = models.IntegerField()
+    enn_docs_month5 = models.IntegerField()
+    enn_docs_month6 = models.IntegerField()
+    enn_packages_month1 = models.IntegerField()
+    enn_packages_month2 = models.IntegerField()
+    enn_packages_month3 = models.IntegerField()
+    enn_packages_month4 = models.IntegerField()
+    enn_packages_month5 = models.IntegerField()
+    enn_packages_month6 = models.IntegerField()
 
     def __str__(self):
-        return f"National Shipment: {self.id_national_shipment} - {self.number_docs} - {self.number_packages} - {self.file_nationals_shipments}"
+        return f"National Shipment: {self.id_national_shipment}"
+
+class T_National_Billing(models.Model):
+    id_national_billing = models.AutoField(primary_key=True)
+    id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
+    id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
+    facn_docs_month1 = models.IntegerField()
+    facn_docs_month2 = models.IntegerField()
+    facn_docs_month3 = models.IntegerField()
+    facn_docs_month4 = models.IntegerField()
+    facn_docs_month5 = models.IntegerField()
+    facn_docs_month6 = models.IntegerField()
+    facn_packages_month1 = models.IntegerField()
+    facn_packages_month2 = models.IntegerField()
+    facn_packages_month3 = models.IntegerField()
+    facn_packages_month4 = models.IntegerField()
+    facn_packages_month5 = models.IntegerField()
+    facn_packages_month6 = models.IntegerField()
+
+    def __str__(self):
+        return f"National Shipment: {self.id_national_billing}"
+    
+class T_Local_Shipment(models.Model):
+    id_local_shipment = models.AutoField(primary_key=True)
+    id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
+    id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
+    enl_docs_month1 = models.IntegerField()
+    enl_docs_month2 = models.IntegerField()
+    enl_docs_month3 = models.IntegerField()
+    enl_docs_month4 = models.IntegerField()
+    enl_docs_month5 = models.IntegerField()
+    enl_docs_month6 = models.IntegerField()
+    enl_packages_month1 = models.IntegerField()
+    enl_packages_month2 = models.IntegerField()
+    enl_packages_month3 = models.IntegerField()
+    enl_packages_month4 = models.IntegerField()
+    enl_packages_month5 = models.IntegerField()
+    enl_packages_month6 = models.IntegerField()
+
+    def __str__(self):
+        return f"National Shipment: {self.id_local_shipment}"
+
+class T_Local_Billing(models.Model):
+    id_local_billing = models.AutoField(primary_key=True)
+    id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
+    id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
+    facl_docs_month1 = models.IntegerField()
+    facl_docs_month2 = models.IntegerField()
+    facl_docs_month3 = models.IntegerField()
+    facl_docs_month4 = models.IntegerField()
+    facl_docs_month5 = models.IntegerField()
+    facl_docs_month6 = models.IntegerField()
+    facl_packages_month1 = models.IntegerField()
+    facl_packages_month2 = models.IntegerField()
+    facl_packages_month3 = models.IntegerField()
+    facl_packages_month4 = models.IntegerField()
+    facl_packages_month5 = models.IntegerField()
+    facl_packages_month6 = models.IntegerField()
+
+    def __str__(self):
+        return f"National Shipment: {self.id_local_billing}"
+    
+class T_Local_Billing(models.Model):
+    id_local_billing = models.AutoField(primary_key=True)
+    id_operator = models.ForeignKey(T_Postal_Operator, on_delete=models.CASCADE)
+    id_period = models.ForeignKey(T_Period, on_delete=models.CASCADE)
+    eni_docs_month1 = models.IntegerField()
+    eni_docs_month2 = models.IntegerField()
+    eni_docs_month3 = models.IntegerField()
+    eni_docs_month4 = models.IntegerField()
+    eni_docs_month5 = models.IntegerField()
+    eni_docs_month6 = models.IntegerField()
+    eni_packages_month1 = models.IntegerField()
+    eni_packages_month2 = models.IntegerField()
+    eni_packages_month3 = models.IntegerField()
+    eni_packages_month4 = models.IntegerField()
+    eni_packages_month5 = models.IntegerField()
+    eni_packages_month6 = models.IntegerField()
+
+    def __str__(self):
+        return f"National Shipment: {self.id_local_billing}"

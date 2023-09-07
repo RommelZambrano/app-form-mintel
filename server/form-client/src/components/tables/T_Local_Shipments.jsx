@@ -1,234 +1,145 @@
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import propTypes from "prop-types";
 
-export function LocalShipments() {
+export function LocalShipments({selectedPeriod}) {
+
+  LocalShipments.propTypes = {
+    selectedPeriod: propTypes.string.isRequired,
+  };
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const onSubmit = async (data) => {
+    try {
+      const formData = {
+        enl_docs_month1: data.docs[0][0],
+        enl_docs_month2: data.docs[0][1],
+        enl_docs_month3: data.docs[0][2],
+        enl_docs_month4: data.docs[0][3],
+        enl_docs_month5: data.docs[0][4],
+        enl_docs_month6: data.docs[0][5], 
+        enl_packages_month1: data.docs[1][0],
+        enl_packages_month2: data.docs[1][1],
+        enl_packages_month3: data.docs[1][2],
+        enl_packages_month4: data.docs[1][3],
+        enl_packages_month5: data.docs[1][4],
+        enl_packages_month6: data.docs[1][5],
+      }
+      console.log("formData", formData);
+    } catch (error) {
+      console.error("Error al crear el formulario", error);
+    }
+  };
 
+  const rows = ["Envío de documentos", "Envío de paquetería"];
+  const months_1_period = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+  ];
+  const months_2_period = [
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+  const months =
+    selectedPeriod === "1er Semestre" ? months_1_period : months_2_period;
 
   return (
-    <FormPageContainer>
-      <Form>
-        <Label>Envios Locales</Label>
+      
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Label>Envíos Locales</Label>
         <Table>
           <thead>
             <tr>
               <th></th>
-              <th>MES 1</th>
-              <th>MES 2</th>
-              <th>MES 3</th>
-              <th>MES 4</th>
-              <th>MES 5</th>
-              <th>MES 6</th>
+              {months.map((month, index) => (
+                <th key={index}>{month.toUpperCase()}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            <TableRow>
-              <td>Envío de documentos</td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes2", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes2 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes3", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes3 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes4", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes4 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes5", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes5 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_documentos_mes6", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_documentos_mes6 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-              {/* Mismo patrón para los demás campos y celdas */}
-            </TableRow>
-            <TableRow>
-              <td>Envío de paquetería</td>
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-
-              <td>
-                <FormInput
-                  type="text"
-                  {...register("enl_paqueteria_mes1", {
-                    required: true,
-                    maxLength: 50,
-                  })}
-                />
-                {errors.enl_paqueteria_mes1 && (
-                  <ErrorMessage>Este campo es requerido</ErrorMessage>
-                )}
-              </td>
-            </TableRow>
+            {rows.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                <td>{row}</td>
+                {months.map((month, monthIndex) => (
+                  <td key={monthIndex}>
+                    <input
+                      type="text"
+                      {...register(`docs[${rowIndex}][${monthIndex}]`, {
+                        required: "Este campo es requerido",
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Este campo debe ser numérico",
+                        },
+                      })}
+                    />
+                    {errors.docs &&
+                      errors.docs[rowIndex] &&
+                      errors.docs[rowIndex][monthIndex] && (
+                        <ErrorMessage>
+                          {errors.docs[rowIndex][monthIndex].message}
+                        </ErrorMessage>
+                      )}
+                  </td>
+                ))}
+              </TableRow>
+            ))}
           </tbody>
         </Table>
-        <Button>Enviar</Button>
+        <Button type="submit">Guardar</Button>
       </Form>
-    </FormPageContainer>
   );
 }
 
+// Estilo para etiquetas
 const Label = styled.label`
-  font-size: 20px;
+  font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
-const FormPageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #f2f2f2;
-  height: 100vh;
-`;
 
+// Estilo para el formulario principal
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 50px;
+  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  width: 80%;
-  max-width: 1000px; /* Valor para controlar el ancho del formulario */
-  margin: 20px auto; /* Centrar el formulario horizontalmente */
+  width: 100%;
+  max-width: 1000px;
+  margin: 2rem auto;
 `;
 
+// Estilo para tablas
 const Table = styled.table`
   width: 100%;
+  max-width: 10px; /* Cambia el valor para ajustar el ancho máximo deseado */
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 1rem auto; /* Centrar la tabla horizontalmente */
+  border-radius: 5px;
+  overflow: hidden;
 `;
 
+// Estilo para filas de tabla
 const TableRow = styled.tr`
   border-bottom: 1px solid #ccc;
 
   td {
-    padding: 10px;
+    padding: 1rem;
     text-align: center;
     border-right: 1px solid #ccc;
 
@@ -238,23 +149,16 @@ const TableRow = styled.tr`
   }
 `;
 
-const FormInput = styled.input`
-  width: 100%;
-  height: 30px;
-  margin-bottom: 10px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
+// Estilo para mensajes de error
 const ErrorMessage = styled.span`
   color: red;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 `;
 
+// Estilo para botones
 const Button = styled.button`
-  margin: 10px;
-  padding: 5px 10px;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #fff;
